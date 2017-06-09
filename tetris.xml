@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This document was created with Syntext Serna Free. --><!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "docbookV4.5/docbookx.dtd" []>
+<article>
+  <articleinfo>
+    <title>Руководство программиста по игре Тетрис(Аксёнов С. А. ИПО-14а)</title>
+  </articleinfo>
+  <section>
+    <title>Сценарий использования 1 - Заполнение ряда</title>
+    <para>Фигурка летит до тех пор, пока не наткнётся на другую фигурку либо на дно стакана. Если при этом заполнился горизонтальный ряд, он пропадает.</para>
+    <programlisting>function removeLine(n) {
+
+    var x, y;
+    for (y = n; y &gt;= 0; --y) {
+        for (x = 0; x &lt; nx; ++x)
+            setBlock(x, y, (y == 0) ? null : getBlock(x, y - 1));
+    }
+}
+</programlisting>
+  </section>
+  <section>
+    <title>Сценарий использования 2 - Сброс фигурки</title>
+    <para>Можно «сбрасывать» фигурку, то есть ускорять её падение, когда уже решено, куда фигурка должна упасть </para>
+    <programlisting>function dropPiece() {
+    eachblock(current.type, current.x, current.y, current.dir, function(x, y) {
+        setBlock(x, y, current.type);
+    });
+} </programlisting>
+  </section>
+  <section>
+    <title>Сценарий использования 3 - Поворот</title>
+    <para>В полёте игрок может поворачивать фигурку на 90°/</para>
+    <programlisting>function rotate() {
+    var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
+    if (unoccupied(current.type, current.x, current.y, newdir)) {
+        current.dir = newdir;
+        invalidate();
+    }
+}
+
+</programlisting>
+  </section>
+</article>
