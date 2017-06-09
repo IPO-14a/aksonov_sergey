@@ -1,3 +1,12 @@
+/**
+* Статистика
+*
+* Класс описывает статистику в игре Тетрис.
+*
+* @author jakesgordon
+* @version 1.0
+* @copyright MIT License
+*/
 var Stats = function() {
 
     function s(a, g, d) {

@@ -1,32 +1,64 @@
 //-------------------------------------------------------------------------
-// base helper methods
+// Базовые методы помощи
 //-------------------------------------------------------------------------
+
+/**
+* Возвращает элемент по id
+*
+* @param string $id Уникальный идентификатор элемента
+* @return element Возвращает элемент
+*/
 function get(id) {
     return document.getElementById(id);
 }
 
+/**
+* Прячет элемент по id
+*
+* @param string $id Уникальный идентификатор элемента
+*/
 function hide(id) {
     get(id).style.visibility = 'hidden';
 }
 
+/**
+* Показывает элемент по id
+*
+* @param string $id Уникальный идентификатор элемента
+*/
 function show(id) {
     get(id).style.visibility = null;
 }
 
+/**
+* Добавляет html код
+*
+* @param string $id Уникальный идентификатор элемента
+* @param string $html Текст, который нужно поместить в этот элемент\
+*/
 function html(id, html) {
     get(id).innerHTML = html;
 }
 
+/**
+* Возвращает текущее время
+*
+* @return Date Возвращает время
+*/
 function timestamp() {
     return new Date().getTime();
 }
 
+/**
+* Возвращает случайное число в указанном промежутке
+*
+* @param int $min Нижняя граница промежутка
+* @param int $max Верхняя граница промежутка
+*
+*@return int Возвращает случайное число
+*/
 function random(min, max) {
     return (min + (Math.random() * (max - min)));
-}
-
-function randomChoice(choices) {
-    return choices[Math.round(random(0, choices.length - 1))];
 }
 
 if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -40,7 +72,7 @@ if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimati
 }
 
 //-------------------------------------------------------------------------
-// game constants
+// Игровые константы
 //-------------------------------------------------------------------------
 
 var KEY = {
@@ -74,7 +106,7 @@ var KEY = {
     nu = 5; // width/height of upcoming preview (in blocks)
 
 //-------------------------------------------------------------------------
-// game variables (initialized during reset)
+// Игровые переменные (инициализируются во время сброса)
 //-------------------------------------------------------------------------
 
 var dx, dy, // pixel size of a single tetris block
@@ -141,10 +173,15 @@ var z = {
     color: 'red'
 };
 
-//------------------------------------------------
-// do the bit manipulation and iterate through each
-// occupied block (x,y) for a given piece
-//------------------------------------------------
+/**
+* Выполняет манипуляции с битами и итерацию по каждому занятому блоку (x, y) для данной части
+*
+* @param var $type Тип детали
+* @param var $x Положение детали по x
+* @param var $y Положение детали по y
+* @param var $dir Направление детали
+* @param function $fn Фукнция
+*/
 function eachblock(type, x, y, dir, fn) {
     var bit, result, row = 0,
         col = 0,
@@ -160,9 +197,16 @@ function eachblock(type, x, y, dir, fn) {
     }
 }
 
-//-----------------------------------------------------
-// check if a piece can fit into a position in the grid
-//-----------------------------------------------------
+/**
+* Проверяет, может ли деталь вписаться в позицию в сетке
+*
+* @param var $type Тип детали
+* @param var $x Положение детали по x
+* @param var $y Положение детали по y
+* @param var $dir Направление детали
+* 
+* @return result Возвращает разультат
+*/
 function occupied(type, x, y, dir) {
     var result = false
     eachblock(type, x, y, dir, function(x, y) {
@@ -176,12 +220,13 @@ function unoccupied(type, x, y, dir) {
     return !occupied(type, x, y, dir);
 }
 
-//-----------------------------------------
-// start with 4 instances of each piece and
-// pick randomly until the 'bag is empty'
-//-----------------------------------------
 var pieces = [];
 
+/**
+* Начинает с 4 экземпляров каждой части и выбирает случайным образом, пока «сумка не будет пуста»,
+*
+* @return var Часть
+*/
 function randomPiece() {
     if (pieces.length == 0)
         pieces = [i, i, i, i, j, j, j, j, l, l, l, l, o, o, o, o, s, s, s, s, t, t, t, t, z, z, z, z];
@@ -195,17 +240,19 @@ function randomPiece() {
 }
 
 
-//-------------------------------------------------------------------------
-// GAME LOOP
-//-------------------------------------------------------------------------
-
+/**
+* Игровой цикл
+*/
 function run() {
 
     showStats(); // initialize FPS counter
     addEvents(); // attach keydown and resize events
 
     var last = now = timestamp();
-
+	
+	/**
+    * Отрисовывает кадр.
+    */
     function frame() {
         now = timestamp();
         update(Math.min(1, (now - last) / 1000.0)); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
@@ -221,16 +268,26 @@ function run() {
 
 }
 
+/**
+* Показывает статистику
+*/
 function showStats() {
     stats.domElement.id = 'stats';
     get('menu').appendChild(stats.domElement);
 }
 
+/**
+* Добавляет события
+*/
 function addEvents() {
     document.addEventListener('keydown', keydown, false);
     window.addEventListener('resize', resize, false);
 }
 
+/**
+* Обрабатывает изменение размера окна
+* @param event $event Событие изменения размера
+*/
 function resize(event) {
     canvas.width = canvas.clientWidth; // set canvas logical size equal to its physical size
     canvas.height = canvas.clientHeight; // (ditto)
@@ -242,6 +299,11 @@ function resize(event) {
     invalidateNext();
 }
 
+/**
+* Обрабатывает нажатие клавиш
+*
+* @param event $ev Событие нажатия клавиши
+*/
 function keydown(ev) {
     var handled = false;
     if (playing) {
@@ -276,82 +338,130 @@ function keydown(ev) {
 }
 
 //-------------------------------------------------------------------------
-// GAME LOGIC
+// Игровая логика
 //-------------------------------------------------------------------------
 
+/**
+* Начинает игру
+*/
 function play() {
     hide('start');
     reset();
     playing = true;
 }
 
+/**
+* Заканчивает игру
+*/
 function lose() {
     show('start');
     setVisualScore();
     playing = false;
 }
 
+/**
+* Отображает очки
+*/
 function setVisualScore(n) {
     vscore = n || score;
     invalidateScore();
 }
 
+/**
+* назначает очки
+*/
 function setScore(n) {
     score = n;
     setVisualScore(n);
 }
 
+/**
+* Добавляет очки
+*/
 function addScore(n) {
     score = score + n;
 }
 
+/**
+* Очищает очки
+*/
 function clearScore() {
     setScore(0);
 }
 
+/**
+* Очищает строки
+*/
 function clearRows() {
     setRows(0);
 }
 
+/**
+* Назначает строки
+*/
 function setRows(n) {
     rows = n;
     step = Math.max(speed.min, speed.start - (speed.decrement * rows));
     invalidateRows();
 }
 
+/**
+* Добавляет строки
+*/
 function addRows(n) {
     setRows(rows + n);
 }
 
+/**
+* Получает блок
+*/
 function getBlock(x, y) {
     return (blocks && blocks[x] ? blocks[x][y] : null);
 }
 
+/**
+* Устанавливает блок
+*/
 function setBlock(x, y, type) {
     blocks[x] = blocks[x] || [];
     blocks[x][y] = type;
     invalidate();
 }
 
+/**
+* Очищает блоки
+*/
 function clearBlocks() {
     blocks = [];
     invalidate();
 }
 
+/**
+* Очищает действия
+*/
 function clearActions() {
     actions = [];
 }
 
+/**
+* Назначает текущую часть
+*/
 function setCurrentPiece(piece) {
     current = piece || randomPiece();
     invalidate();
 }
 
+/**
+* Назначает следующую часть
+*/
 function setNextPiece(piece) {
     next = piece || randomPiece();
     invalidateNext();
 }
 
+/**
+* Производит сброс
+*/
 function reset() {
     dt = 0;
     clearActions();
@@ -362,6 +472,10 @@ function reset() {
     setNextPiece();
 }
 
+/**
+* Производит обновление
+*
+*/
 function update(idt) {
     if (playing) {
         if (vscore < score)
@@ -375,6 +489,11 @@ function update(idt) {
     }
 }
 
+/**
+* Обрабатывает событие
+*
+* @param var $action Действие
+*/
 function handle(action) {
     switch (action) {
         case DIR.LEFT:
@@ -392,6 +511,13 @@ function handle(action) {
     }
 }
 
+/**
+* Перемещает фигуру
+*
+* @param var $dir Сторона
+* 
+* @return bol Возвращает удалось или не удалось выполнить действие
+*/
 function move(dir) {
     var x = current.x,
         y = current.y;
@@ -416,6 +542,9 @@ function move(dir) {
     }
 }
 
+/**
+* Поворачивает текущую фигуру
+*/
 function rotate() {
     var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
     if (unoccupied(current.type, current.x, current.y, newdir)) {
@@ -424,6 +553,9 @@ function rotate() {
     }
 }
 
+/**
+* Определяет, что будет происходить после того, как очередная деталь стала на место
+*/
 function drop() {
     if (!move(DIR.DOWN)) {
         addScore(10);
@@ -438,12 +570,18 @@ function drop() {
     }
 }
 
+/**
+* Опускает деталь вниз экрана
+*/
 function dropPiece() {
     eachblock(current.type, current.x, current.y, current.dir, function(x, y) {
         setBlock(x, y, current.type);
     });
 }
 
+/**
+* Удаляет линии, если они заполнилась
+*/
 function removeLines() {
     var x, y, complete, n = 0;
     for (y = ny; y > 0; --y) {
@@ -464,6 +602,11 @@ function removeLines() {
     }
 }
 
+/**
+* Удаляет линию
+*
+* @param var $n Тип детали
+*/
 function removeLine(n) {
     var x, y;
     for (y = n; y >= 0; --y) {
@@ -473,27 +616,42 @@ function removeLine(n) {
 }
 
 //-------------------------------------------------------------------------
-// RENDERING
+// Рендеринг
 //-------------------------------------------------------------------------
 
 var invalid = {};
 
+/**
+* Аннулирует игровое поле
+*/
 function invalidate() {
     invalid.court = true;
 }
 
+/**
+* Аннулирует следующую деталь
+*/
 function invalidateNext() {
     invalid.next = true;
 }
 
+/**
+* Аннулирует счёт
+*/
 function invalidateScore() {
     invalid.score = true;
 }
 
+/**
+* Аннулирует строки
+*/
 function invalidateRows() {
     invalid.rows = true;
 }
 
+/**
+* Рисует окно
+*/
 function draw() {
     ctx.save();
     ctx.lineWidth = 1;
@@ -505,6 +663,9 @@ function draw() {
     ctx.restore();
 }
 
+/**
+* Рисует игровое поле
+*/
 function drawCourt() {
     if (invalid.court) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -522,6 +683,9 @@ function drawCourt() {
     }
 }
 
+/**
+* Рисует следующую деталь
+*/
 function drawNext() {
     if (invalid.next) {
         var padding = (nu - next.type.size) / 2; // half-arsed attempt at centering next piece display
@@ -536,6 +700,9 @@ function drawNext() {
     }
 }
 
+/**
+* Рисует очки
+*/
 function drawScore() {
     if (invalid.score) {
         html('score', ("00000" + Math.floor(vscore)).slice(-5));
@@ -543,6 +710,9 @@ function drawScore() {
     }
 }
 
+/**
+* Рисует строки
+*/
 function drawRows() {
     if (invalid.rows) {
         html('rows', rows);
@@ -550,20 +720,22 @@ function drawRows() {
     }
 }
 
+/**
+* Рисует деталь
+*/
 function drawPiece(ctx, type, x, y, dir) {
     eachblock(type, x, y, dir, function(x, y) {
         drawBlock(ctx, x, y, type.color);
     });
 }
 
+/**
+* Рисует блок
+*/
 function drawBlock(ctx, x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * dx, y * dy, dx, dy);
     ctx.strokeRect(x * dx, y * dy, dx, dy)
 }
-
-//-------------------------------------------------------------------------
-// FINALLY, lets run the game
-//-------------------------------------------------------------------------
 
 run();
