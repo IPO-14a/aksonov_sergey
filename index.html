@@ -41,7 +41,7 @@
   <script src="stats.js"></script>
   <script>
   
-          //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // base helper methods
     //-------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@
                                      }
     }
 	
-	    //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
     // game constants
     //-------------------------------------------------------------------------
 
@@ -79,6 +79,23 @@
         nx      = 10, // width of tetris court (in blocks)
         ny      = 20, // height of tetris court (in blocks)
         nu      = 5;  // width/height of upcoming preview (in blocks)
+		
+	//-------------------------------------------------------------------------
+    // game variables (initialized during reset)
+    //-------------------------------------------------------------------------
+
+    var dx, dy,        // pixel size of a single tetris block
+        blocks,        // 2 dimensional array (nx*ny) representing tetris court - either empty block or occupied by a 'piece'
+        actions,       // queue of user actions (inputs)
+        playing,       // true|false - game is in progress
+        dt,            // time since starting this game
+        current,       // the current piece
+        next,          // the next piece
+        score,         // the current score
+        vscore,        // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
+        rows,          // number of completed rows in the current game
+        step;          // how long before current piece drops by 1 row
+
   
   </script>
 </body>
