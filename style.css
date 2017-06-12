@@ -1,214 +1,181 @@
 body {
-    font - family: Helvetica, sans - serif;
+    font-family: Helvetica, sans-serif;
 }
-
-#
-tetris {
-    margin: 1e m auto;
-    padding: 1e m;
-    border: 4 px solid black;
-    border - radius: 10 px;
-    background - color: #F8F8F8;
+#tetris {
+    margin: 1em auto;
+    padding: 1em;
+    border: 4px solid black;
+    border-radius: 10px;
+    background-color: #F8F8F8;
 }
-
-#
-stats {
-    display: inline - block;
-    vertical - align: top;
+#stats {
+    display: inline-block;
+    vertical-align: top;
 }
-
-#
-canvas {
-    display: inline - block;
-    vertical - align: top;
+#canvas {
+    display: inline-block;
+    vertical-align: top;
     background: url(texture.jpg);
-    box - shadow: 10 px 10 px 10 px #999;
-            border: 2px solid # 333;
+    box-shadow: 10px 10px 10px #999;
+    border: 2px solid #333;
 }
-
-#
-menu {
-    display: inline - block;
-    vertical - align: top;
+#menu {
+    display: inline-block;
+    vertical-align: top;
     position: relative;
+
 }
-
-#
-menu p {
-    margin: 0.5e m 0;
-    text - align: center;
+#menu p {
+            margin: 0.5em 0;
+            text-align: center;
 }
-
-#
-menu p a {
-    text - decoration: none;
-    color: black;
+#menu p a {
+            text-decoration: none;
+            color: black;
 }
-
-#
-upcoming {
-    display: block;
-    margin: 0 auto;
-    background - color: #E0E0E0;
+#upcoming {
+            display: block;
+            margin: 0 auto;
+            background-color: #E0E0E0;
 }
-
-#
-score {
-    color: red;
-    font - weight: bold;
-    vertical - align: middle;
+#score {
+            color: red;
+            font-weight: bold;
+            vertical-align: middle;
 }
-
-#
-rows {
-    color: blue;
-    font - weight: bold;
-    vertical - align: middle;
+#rows {
+            color: blue;
+            font-weight: bold;
+            vertical-align: middle;
 }
-
-#
-stats {
-    position: absolute;
-    bottom: 0e m;
-    right: 1e m;
+#stats {
+            position: absolute;
+            bottom: 0em;
+            right: 1em;
 }
-
-@media screen and(min - width: 0 px) and(min - height: 0 px) {#
-        tetris {
-            font - size: 0.75e m;
-            width: 250 px;
-        }#
-        menu {
-            width: 100 px;
-            height: 200 px;
-        }#
-        upcoming {
-            width: 50 px;
-            height: 50 px;
-        }#
-        canvas {
-            width: 100 px;
-            height: 200 px;
-        }
+@media screen and (min-width: 0px) and (min-height: 0px) {
+    #tetris {
+        font-size: 0.75em;
+        width: 250px;
     }
-    /* 10px chunks */
-
-@media screen and(min - width: 400 px) and(min - height: 400 px) {#
-        tetris {
-            font - size: 1.00e m;
-            width: 350 px;
-        }#
-        menu {
-            width: 150 px;
-            height: 300 px;
-        }#
-        upcoming {
-            width: 75 px;
-            height: 75 px;
-        }#
-        canvas {
-            width: 150 px;
-            height: 300 px;
-        }
+    #menu {
+        width: 100px;
+        height: 200px;
     }
-    /* 15px chunks */
-
-@media screen and(min - width: 500 px) and(min - height: 500 px) {#
-        tetris {
-            font - size: 1.25e m;
-            width: 450 px;
-        }#
-        menu {
-            width: 200 px;
-            height: 400 px;
-        }#
-        upcoming {
-            width: 100 px;
-            height: 100 px;
-        }#
-        canvas {
-            width: 200 px;
-            height: 400 px;
-        }
+    #upcoming {
+        width: 50px;
+        height: 50px;
     }
-    /* 20px chunks */
-
-@media screen and(min - width: 600 px) and(min - height: 600 px) {#
-        tetris {
-            font - size: 1.50e m;
-            width: 550 px;
-        }#
-        menu {
-            width: 250 px;
-            height: 500 px;
-        }#
-        upcoming {
-            width: 125 px;
-            height: 125 px;
-        }#
-        canvas {
-            width: 250 px;
-            height: 500 px;
-        }
+    #canvas {
+        width: 100px;
+        height: 200px;
     }
-    /* 25px chunks */
-
-@media screen and(min - width: 700 px) and(min - height: 700 px) {#
-        tetris {
-            font - size: 1.75e m;
-            width: 650 px;
-        }#
-        menu {
-            width: 300 px;
-            height: 600 px;
-        }#
-        upcoming {
-            width: 150 px;
-            height: 150 px;
-        }#
-        canvas {
-            width: 300 px;
-            height: 600 px;
-        }
+}
+@media screen and (min-width: 400px) and (min-height: 400px) {
+    #tetris {
+        font-size: 1.00em;
+        width: 350px;
     }
-    /* 30px chunks */
-
-@media screen and(min - width: 800 px) and(min - height: 800 px) {#
-        tetris {
-            font - size: 2.00e m;
-            width: 750 px;
-        }#
-        menu {
-            width: 350 px;
-            height: 700 px;
-        }#
-        upcoming {
-            width: 175 px;
-            height: 175 px;
-        }#
-        canvas {
-            width: 350 px;
-            height: 700 px;
-        }
+    #menu {
+        width: 150px;
+        height: 300px;
     }
-    /* 35px chunks */
-
-@media screen and(min - width: 900 px) and(min - height: 900 px) {#
-        tetris {
-            font - size: 2.25e m;
-            width: 850 px;
-        }#
-        menu {
-            width: 400 px;
-            height: 800 px;
-        }#
-        upcoming {
-            width: 200 px;
-            height: 200 px;
-        }#
-        canvas {
-            width: 400 px;
-            height: 800 px;
-        }
+    #upcoming {
+        width: 75px;
+        height: 75px;
     }
-    /* 40px chunks */
+    #canvas {
+        width: 150px;
+        height: 300px;
+    }
+}
+@media screen and (min-width: 500px) and (min-height: 500px) {
+    #tetris {
+        font-size: 1.25em;
+        width: 450px;
+    }
+    #menu {
+        width: 200px;
+        height: 400px;
+    }
+    #upcoming {
+        width: 100px;
+        height: 100px;
+    }
+    #canvas {
+        width: 200px;
+        height: 400px;
+    }
+}
+@media screen and (min-width: 600px) and (min-height: 600px) {
+    #tetris {
+        font-size: 1.50em;
+        width: 550px;
+    }
+    #menu {
+        width: 250px;
+        height: 500px;
+    }
+    #upcoming {
+        width: 125px;
+        height: 125px;
+    }
+    #canvas {
+        width: 250px;
+        height: 500px;
+    }
+}
+@media screen and (min-width: 700px) and (min-height: 700px) {
+    #tetris {
+        font-size: 1.75em;
+        width: 650px;
+    }
+    #menu {
+        width: 300px;
+        height: 600px;
+    }
+    #upcoming {
+        width: 150px;
+        height: 150px;
+    }
+    #canvas {
+        width: 300px;
+        height: 600px;
+    }
+}
+@media screen and (min-width: 800px) and (min-height: 800px) {
+    #tetris {
+        font-size: 2.00em;
+        width: 750px;
+    }
+    #menu {
+        width: 350px;
+        height: 700px;
+    }
+    #upcoming {
+        width: 175px;
+        height: 175px;
+    }
+    #canvas {
+        width: 350px;
+        height: 700px;
+    }
+}
+@media screen and (min-width: 900px) and (min-height: 900px) {
+    #tetris {
+        font-size: 2.25em;
+        width: 850px;
+    }
+    #menu {
+        width: 400px;
+        height: 800px;
+    }
+    #upcoming {
+        width: 200px;
+        height: 200px;
+    }
+    #canvas {
+        width: 400px;
+        height: 800px;
+    }
+}

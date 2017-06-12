@@ -4,18 +4,18 @@
 /**
  * Возвращает элемент по id
  *
- * @param string $id Уникальный идентификатор элемента
+ * @param string id Уникальный идентификатор элемента
  *
- * @return element Возвращает элемент
+ * @return object Возвращает элемент
  */
 function get(id) {
     return document.getElementById(id);
 }
 
 /**
- * Прячет элемент по id
+ * Скрывает элемент по id
  *
- * @param string $id Уникальный идентификатор элемента
+ * @param string id Уникальный идентификатор элемента
  */
 function hide(id) {
     get(id).style.visibility = 'hidden';
@@ -24,7 +24,7 @@ function hide(id) {
 /**
  * Показывает элемент по id
  *
- * @param string $id Уникальный идентификатор элемента
+ * @param string id Уникальный идентификатор элемента
  */
 function show(id) {
     get(id).style.visibility = null;
@@ -33,9 +33,8 @@ function show(id) {
 /**
  * Добавляет html код
  *
- * @param string $id Уникальный идентификатор элемента
- *
- * @param string $html Текст, который нужно поместить в этот элемент\
+ * @param string id Уникальный идентификатор элемента
+ * @param string html Текст, который нужно поместить в этот элемент\
  */
 function html(id, html) {
     get(id).innerHTML = html;
@@ -53,16 +52,16 @@ function timestamp() {
 /**
  * Возвращает случайное число в указанном промежутке
  *
- * @param int $min Нижняя граница промежутка
- * @param int $max Верхняя граница промежутка
+ * @param number min Нижняя граница промежутка
+ * @param number max Верхняя граница промежутка
  *
- *@return int Возвращает случайное число
+ * @return number Возвращает случайное число
  */
 function random(min, max) {
     return (min + (Math.random() * (max - min)));
 }
 
-if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+if (!window.requestAnimationFrame) {
     window.requestAnimationFrame = window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
@@ -76,6 +75,13 @@ if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimati
 // Игровые константы
 //-------------------------------------------------------------------------
 
+    /**
+     * Клавиша
+     *
+     * Описывает код клавиши
+     *
+     * @const number KEY
+     */
 var KEY = {
         ESC: 27,
         SPACE: 32,
@@ -84,6 +90,14 @@ var KEY = {
         RIGHT: 39,
         DOWN: 40
     },
+	
+    /**
+     * Направление
+     *
+     * Описывает код направления
+     *
+     * @var number DIR
+     */
     DIR = {
         UP: 0,
         RIGHT: 1,
@@ -92,34 +106,202 @@ var KEY = {
         MIN: 0,
         MAX: 3
     },
+	
+    /**
+     * Статистика
+     *
+     * Описывает статистику игры
+     *
+     * @var object stats
+     */
     stats = new Stats(),
+	
+    /**
+     * Холст
+     *
+     * Описывает холст для отрисовки
+     *
+     * @var object canvas
+     */
     canvas = get('canvas'),
+	
+    /**
+     * Контекст холста
+     *
+     * Описывает контекст холста
+     *
+     * @var object ctx
+     */
     ctx = canvas.getContext('2d'),
+	
+    /**
+     * Предстоящий холст
+     *
+     * Описывает предстоящий холст
+     *
+     * @var object ucanvas
+     */
     ucanvas = get('upcoming'),
+	
+    /**
+     * Контекст предстоящего холста
+     *
+     * Описывает контекст предстоящего холста
+     *
+     * @var object uctx
+     */
     uctx = ucanvas.getContext('2d'),
+	
+    /**
+     * Скорость
+     *
+     * Описывает время падения на 1 строку (в секундах)
+     *
+     * @var number speed
+     */
     speed = {
         start: 0.6,
         decrement: 0.005,
         min: 0.1
-    }, // how long before piece drops by 1 row (seconds)
-    nx = 10, // width of tetris court (in blocks)
-    ny = 20, // height of tetris court (in blocks)
-    nu = 5; // width/height of upcoming preview (in blocks)
+    },
+	
+    /**
+     * Ширина по x
+     *
+     * Ширина тетриса (в блоках)
+     *
+     * @var number nx
+     */
+    nx = 10,
+	
+    /**
+     * Высота по y
+     *
+     * Высота тетриса (в блоках)
+     *
+     * @var number ny
+     */
+    ny = 20,
+	
+    /**
+     * Ширина и высота предстоящего превью (в блоках)
+     *
+     * Высота тетриса (в блоках)
+     *
+     * @var number nu
+     */
+    nu = 5;
 
 //-------------------------------------------------------------------------
 // Игровые переменные (инициализируются во время сброса)
 //-------------------------------------------------------------------------
 
-var dx, dy, // pixel size of a single tetris block
-    blocks, // 2 dimensional array (nx*ny) representing tetris court - either empty block or occupied by a 'piece'
-    actions, // queue of user actions (inputs)
-    playing, // true|false - game is in progress
-    dt, // time since starting this game
-    current, // the current piece
-    next, // the next piece
-    score, // the current score
-    vscore, // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
-    rows, // number of completed rows in the current game
+    /**
+     * Ширина блока
+     *
+     * Ширина в пикселях одного блока
+     *
+     * @var number dx
+     */
+var dx,
+
+    /**
+     * Высота блока
+     *
+     * Высота в пикселях одного блока
+     *
+     * @var number dy
+     */
+    dy,
+	
+    /**
+     * Блоки
+     *
+     * 2-мерная массив (nx * ny), представляющий поле тетриса - либо пустой блок, либо занятый блоком
+     *
+     * @var array blocks
+     */
+    blocks,
+	
+    /**
+     * Действия
+     *
+     * Очередь действий пользователя (вводов)
+     *
+     * @var queue actions
+     */
+    actions,
+	
+    /**
+     * Игра
+     *
+     * Запущена ли игра
+     *
+     * @var boolean playing
+     */
+    playing,
+	
+	/**
+     * Вермя
+     *
+     * Время, прошедшее с запуска игры
+     *
+     * @var object dt
+     */
+    dt,
+	
+	/**
+     * Текущая деталь
+     *
+     * Даталь, которая в данный момент опускается по игровому полю
+     *
+     * @var object current
+     */
+    current,
+	
+	/**
+     * Следующая деталь
+     *
+     * Даталь, которая будет следующей опускаться по игровому полю
+     *
+     * @var object next
+     */
+    next,
+	
+	/**
+     * Очки
+     *
+     * Очки, заработанные пользователем
+     *
+     * @var number score
+     */
+    score,
+	
+	/**
+     * Текущие очки
+     *
+     * Текущие очки, заработанные пользователем
+     *
+     * @var number vscore
+     */
+    vscore,
+	
+	/**
+     * Заполненные строки
+     *
+     * Количество строк, заполненных в текущей игре
+     *
+     * @var number rows
+     */
+    rows,
+	
+	/**
+     * Шаг
+     *
+     * Время, за которое деталь опустится на 1 строку
+     *
+     * @var number step
+     */
     step; // how long before current piece drops by 1 row
 
 //-------------------------------------------------------------------------
@@ -138,36 +320,91 @@ var dx, dy, // pixel size of a single tetris block
 //
 //-------------------------------------------------------------------------
 
+/**
+ * Деталь 1
+ *
+ * Описывает деталь 1
+ *
+ * @var obj i
+ */
 var i = {
     size: 4,
     blocks: [0x0F00, 0x2222, 0x00F0, 0x4444],
     color: 'cyan'
 };
+
+/**
+ * Деталь 2
+ *
+ * Описывает деталь 2
+ *
+ * @var obj j
+ */
 var j = {
     size: 3,
     blocks: [0x44C0, 0x8E00, 0x6440, 0x0E20],
     color: 'blue'
 };
+
+/**
+ * Деталь 3
+ *
+ * Описывает деталь 3
+ *
+ * @var obj l
+ */
 var l = {
     size: 3,
     blocks: [0x4460, 0x0E80, 0xC440, 0x2E00],
     color: 'orange'
 };
+
+/**
+ * Деталь 4
+ *
+ * Описывает деталь 4
+ *
+ * @var obj o
+ */
 var o = {
     size: 2,
     blocks: [0xCC00, 0xCC00, 0xCC00, 0xCC00],
     color: 'yellow'
 };
+
+/**
+ * Деталь 5
+ *
+ * Описывает деталь 5
+ *
+ * @var obj s
+ */
 var s = {
     size: 3,
     blocks: [0x06C0, 0x8C40, 0x6C00, 0x4620],
     color: 'green'
 };
+
+/**
+ * Деталь 6
+ *
+ * Описывает деталь 6
+ *
+ * @var obj t
+ */
 var t = {
     size: 3,
     blocks: [0x0E40, 0x4C40, 0x4E00, 0x4640],
     color: 'purple'
 };
+
+/**
+ * Деталь 7
+ *
+ * Описывает деталь 7
+ *
+ * @var obj z
+ */
 var z = {
     size: 3,
     blocks: [0x0C60, 0x4C80, 0xC600, 0x2640],
@@ -177,11 +414,11 @@ var z = {
 /**
  * Выполняет манипуляции с битами и итерацию по каждому занятому блоку (x, y) для данной части
  *
- * @param var $type Тип детали
- * @param var $x Положение детали по x
- * @param var $y Положение детали по y
- * @param var $dir Направление детали
- * @param function $fn Фукнция
+ * @param object type Тип детали
+ * @param number x Положение детали по x
+ * @param number y Положение детали по y
+ * @param number dir Направление детали
+ * @param function fn Фукнция, которая будет проделывать действия над блоками
  */
 function eachblock(type, x, y, dir, fn) {
     var bit, result, row = 0,
@@ -201,22 +438,33 @@ function eachblock(type, x, y, dir, fn) {
 /**
  * Проверяет, может ли деталь вписаться в позицию в сетке
  *
- * @param var $type Тип детали
- * @param var $x Положение детали по x
- * @param var $y Положение детали по y
- * @param var $dir Направление детали
+ * @param var type Тип детали
+ * @param var x Положение детали по x
+ * @param var y Положение детали по y
+ * @param var dir Направление детали
  * 
- * @return result Возвращает разультат
+ * @return boolean result Возвращает разультат
  */
 function occupied(type, x, y, dir) {
     var result = false
     eachblock(type, x, y, dir, function(x, y) {
-        if ((x < 0) || (x >= nx) || (y < 0) || (y >= ny) || getBlock(x, y))
+        if ((x < 0) || (x >= nx) || (y < 0) || (y >= ny) || getBlock(x, y)) {
             result = true;
+        }
     });
     return result;
 }
 
+/**
+ * Возвращает результат, если деталь не вписывается
+ *
+ * @param var type Тип детали
+ * @param var x Положение детали по x
+ * @param var y Положение детали по y
+ * @param var dir Направление детали
+ * 
+ * @return boolean result Возвращает разультат
+ */
 function unoccupied(type, x, y, dir) {
     return !occupied(type, x, y, dir);
 }
@@ -224,13 +472,14 @@ function unoccupied(type, x, y, dir) {
 var pieces = [];
 
 /**
- * Начинает с 4 экземпляров каждой части и выбирает случайным образом, пока «сумка не будет пуста»,
+ * Начинает с 4 экземпляров каждой части и выбирает случайным образом, пока «сумка не будет пуста»
  *
- * @return var Часть
+ * @return var Часть детали
  */
 function randomPiece() {
-    if (pieces.length == 0)
+    if (pieces.length == 0) {
         pieces = [i, i, i, i, j, j, j, j, l, l, l, l, o, o, o, o, s, s, s, s, t, t, t, t, z, z, z, z];
+    }
     var type = pieces.splice(random(0, pieces.length - 1), 1)[0];
     return {
         type: type,
@@ -288,7 +537,7 @@ function addEvents() {
 /**
  * Обрабатывает изменение размера окна
  *
- * @param event $event Событие изменения размера
+ * @param event event Событие изменения размера
  */
 function resize(event) {
     canvas.width = canvas.clientWidth; // set canvas logical size equal to its physical size
@@ -304,7 +553,7 @@ function resize(event) {
 /**
  * Обрабатывает нажатие клавиш
  *
- * @param event $ev Событие нажатия клавиши
+ * @param event ev Событие нажатия клавиши
  */
 function keydown(ev) {
     var handled = false;
@@ -335,8 +584,9 @@ function keydown(ev) {
         play();
         handled = true;
     }
-    if (handled)
+    if (handled) {
         ev.preventDefault(); // prevent arrow keys from scrolling the page (supported in IE9+ and all other browsers)
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -363,6 +613,8 @@ function lose() {
 
 /**
  * Отображает очки
+ *
+ * @param var n Число, представляющее очки
  */
 function setVisualScore(n) {
     vscore = n || score;
@@ -371,6 +623,8 @@ function setVisualScore(n) {
 
 /**
  * Назначает очки
+ *
+ * @param int n Число, представляющее очки
  */
 function setScore(n) {
     score = n;
@@ -379,6 +633,8 @@ function setScore(n) {
 
 /**
  * Добавляет очки
+ *
+ * @param int n Число, представляющее очки
  */
 function addScore(n) {
     score = score + n;
@@ -400,6 +656,8 @@ function clearRows() {
 
 /**
  * Назначает строки
+ *
+ * @param var n Число, представляющее строки
  */
 function setRows(n) {
     rows = n;
@@ -409,6 +667,8 @@ function setRows(n) {
 
 /**
  * Добавляет строки
+ *
+ * @param var n Число, представляющее строки
  */
 function addRows(n) {
     setRows(rows + n);
@@ -416,6 +676,11 @@ function addRows(n) {
 
 /**
  * Получает блок
+ *
+ * @param var x Число, представляющее строку блока
+ * @param var n Число, представляющее столбец блока
+ *
+ * @return object result Возвращает ссылку на объект
  */
 function getBlock(x, y) {
     return (blocks && blocks[x] ? blocks[x][y] : null);
@@ -423,6 +688,10 @@ function getBlock(x, y) {
 
 /**
  * Устанавливает блок
+ *
+ * @param var x Число, представляющее строку блока
+ * @param var n Число, представляющее столбец блока
+ * @param var type Число, представляющее тип блока
  */
 function setBlock(x, y, type) {
     blocks[x] = blocks[x] || [];
@@ -447,6 +716,8 @@ function clearActions() {
 
 /**
  * Назначает текущую часть
+ *
+ * @param object piece Объект, представляющий собой часть детали
  */
 function setCurrentPiece(piece) {
     current = piece || randomPiece();
@@ -455,6 +726,8 @@ function setCurrentPiece(piece) {
 
 /**
  * Назначает следующую часть
+ *
+ * @param object piece Объект, представляющий собой часть детали
  */
 function setNextPiece(piece) {
     next = piece || randomPiece();
@@ -477,11 +750,13 @@ function reset() {
 /**
  * Производит обновление
  *
+ * @param var idt Число, представляющее собой id
  */
 function update(idt) {
     if (playing) {
-        if (vscore < score)
+        if (vscore < score) {
             setVisualScore(vscore + 1);
+        }
         handle(actions.shift());
         dt = dt + idt;
         if (dt > step) {
@@ -494,7 +769,7 @@ function update(idt) {
 /**
  * Обрабатывает событие
  *
- * @param var $action Действие
+ * @param event action Действие, выполненное пользователем
  */
 function handle(action) {
     switch (action) {
@@ -516,9 +791,9 @@ function handle(action) {
 /**
  * Перемещает фигуру
  *
- * @param var $dir Сторона
+ * @param var dir Сторона
  * 
- * @return bol Возвращает удалось или не удалось выполнить действие
+ * @return bool Возвращает извещение удалось или не удалось выполнить действие
  */
 function move(dir) {
     var x = current.x,
@@ -589,8 +864,9 @@ function removeLines() {
     for (y = ny; y > 0; --y) {
         complete = true;
         for (x = 0; x < nx; ++x) {
-            if (!getBlock(x, y))
+            if (!getBlock(x, y)) {
                 complete = false;
+            }
         }
         if (complete) {
             removeLine(y);
@@ -607,13 +883,14 @@ function removeLines() {
 /**
  * Удаляет линию
  *
- * @param var $n Тип детали
+ * @param var n Тип детали
  */
 function removeLine(n) {
     var x, y;
     for (y = n; y >= 0; --y) {
-        for (x = 0; x < nx; ++x)
+        for (x = 0; x < nx; ++x) {
             setBlock(x, y, (y == 0) ? null : getBlock(x, y - 1));
+        }
     }
 }
 
@@ -671,13 +948,15 @@ function draw() {
 function drawCourt() {
     if (invalid.court) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (playing)
+        if (playing) {
             drawPiece(ctx, current.type, current.x, current.y, current.dir);
+        }
         var x, y, block;
         for (y = 0; y < ny; y++) {
             for (x = 0; x < nx; x++) {
-                if (block = getBlock(x, y))
+                if (block = getBlock(x, y)) {
                     drawBlock(ctx, x, y, block.color);
+                }
             }
         }
         ctx.strokeRect(0, 0, nx * dx - 1, ny * dy - 1); // court boundary
@@ -724,6 +1003,12 @@ function drawRows() {
 
 /**
  * Рисует деталь
+ *
+ * @param var ctx Размер детали
+ * @param var type Тип детали
+ * @param var x Положение детали по x
+ * @param var y Положение детали по y
+ * @param var dir Направление детали
  */
 function drawPiece(ctx, type, x, y, dir) {
     eachblock(type, x, y, dir, function(x, y) {
@@ -733,6 +1018,11 @@ function drawPiece(ctx, type, x, y, dir) {
 
 /**
  * Рисует блок
+ *
+ * @param var ctx Размер детали
+ * @param var x Положение детали по x
+ * @param var y Положение детали по y
+ * @param var color Цвет детали
  */
 function drawBlock(ctx, x, y, color) {
     ctx.fillStyle = color;
