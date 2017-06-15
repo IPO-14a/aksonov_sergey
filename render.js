@@ -89,7 +89,7 @@ var KEY = {
         UP: 38,
         RIGHT: 39,
         DOWN: 40
-    };
+};
 	
 /**
  * Направление
@@ -105,7 +105,7 @@ var DIR = {
         LEFT: 3,
         MIN: 0,
         MAX: 3
-    };
+};
 	
 /**
  * Статистика
@@ -163,7 +163,7 @@ var speed = {
         start: 0.6,
         decrement: 0.005,
         min: 0.1
-    };
+};
 	
 /**
  * Ширина по x
@@ -469,6 +469,13 @@ function unoccupied(type, x, y, dir) {
     return !occupied(type, x, y, dir);
 }
 
+/**
+ * Детали
+ *
+ * Описывает все детали
+ *
+ * @var obj pieces
+ */
 var pieces = [];
 
 /**
