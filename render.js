@@ -83,12 +83,12 @@ if (!window.requestAnimationFrame) {
  * @var number KEY
  */
 var KEY = {
-        ESC: 27,
-        SPACE: 32,
-        LEFT: 37,
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40
+    ESC: 27,
+    SPACE: 32,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40
 };
 	
 /**
@@ -99,12 +99,12 @@ var KEY = {
  * @var number DIR
  */
 var DIR = {
-        UP: 0,
-        RIGHT: 1,
-        DOWN: 2,
-        LEFT: 3,
-        MIN: 0,
-        MAX: 3
+    UP: 0,
+    RIGHT: 1,
+    DOWN: 2,
+    LEFT: 3,
+    MIN: 0,
+    MAX: 3
 };
 	
 /**
@@ -160,9 +160,9 @@ var uctx = ucanvas.getContext('2d');
  * @var number speed
  */
 var speed = {
-        start: 0.6,
-        decrement: 0.005,
-        min: 0.1
+    start: 0.6,
+    decrement: 0.005,
+    min: 0.1
 };
 	
 /**

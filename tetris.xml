@@ -28,7 +28,7 @@
   </section>
   <section>
     <title>Сценарий использования 3 - Поворот</title>
-    <para>В полёте игрок может поворачивать фигурку на 90°/</para>
+    <para>В полёте игрок может поворачивать фигурку на 90°</para>
     <programlisting>function rotate() {
     var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
     if (unoccupied(current.type, current.x, current.y, newdir)) {
